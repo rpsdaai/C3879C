@@ -1,0 +1,111 @@
+<!-- https://www.w3schools.com/html/html_form_input_types.asp -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Approval Service</title>
+</head>
+
+<body>
+<!--
+train['Gender'] = train['Gender'].map({'Female': 0,'Male': 1})
+train['Married'] = train['Married'].map({'No': 0,'Yes': 1})
+train['Dependents'] = train['Dependents'].map({'0':0, '1':1, '2':2, '3':3, '3+': 3})
+train['Education'] = train['Education'].map({'Not Graduate': 0,'Graduate': 1})
+train['Self_Employed'] = train['Self_Employed'].map({'No': 0,'Yes': 1})
+train['Property_Area'] = train['Property_Area'].map({'Rural': 0,'Semiurban':1, 'Urban': 2})
+train['Loan_Status'] = train['Loan_Status'].map({'N': 0,'Y': 1})
+-->
+<h1>Loan Demo</h1>
+
+<!-- form action = "http://localhost:5000/test_form_service/" method="post" -->
+<form action="{{ url_for('test_form_service') }}" method="post">
+     <fieldset>
+         <legend>Applicant Information</legend>
+         <p>
+              First name:
+              <input type="text" name="firstname" value="John">
+              Last name:
+              <input type="text" name="lastname" value="Tan">
+        </p>
+     </fieldset>
+
+
+   <fieldset>
+      <legend>Gender Type</legend>
+      <p>
+          Gender:
+          <input type="radio" name="gender" id="Male" value="Male" checked> Male
+          <input type="radio" name="gender" id="Female" value="Female"> Female <br>
+      </p>
+   </fieldset>
+
+   <fieldset>
+      <legend>Marital Status Type</legend>
+      <p>
+          Marital Status:
+          <input type="radio" name="MaritalStatus" id="Single" value="No"> Single
+          <input type="radio" name="MaritalStatus" id="Married"  value="Yes" checked> Married<br>
+      </p>
+   </fieldset>
+
+   <fieldset>
+      <legend>Dependents Information</legend>
+      <p>
+          Number of dependents: <input type="number" name="Dependents" value="0" min="0">
+      </p>
+   </fieldset>
+
+   <fieldset>
+      <legend>Education Type</legend>
+      <p>
+          Education:
+          <input type="radio" name="Education" id="Graduate" value="Graduate"> Graduate
+          <input type="radio" name="Education" id="Non-Graduate" value="Not Graduate" checked> Non Graduate<br>
+      </p>
+   </fieldset>
+
+   <fieldset>
+      <legend>Employment Type</legend>
+      <p>
+          Self Employed:
+          <input type="radio" name="SelfEmployment" id="Yes" value="Yes"> Yes
+          <input type="radio" name="SelfEmployment" id="No" value="No" checked> No<br>
+      </p>
+   </fieldset>
+
+   <fieldset>
+      <legend>Property Area Type</legend>
+      <p>
+         <label>Property Area</label>
+         <select id = "PropertyAreaList" name="PropertyAreaList">
+           <option value = "Urban" selected>Urban</option>
+           <option value = "Semiurban">SemiUrban</option>
+           <option value = "Rural">Rural</option>
+         </select>
+      </p>
+   </fieldset>
+
+   <fieldset>
+      <legend>Income Information</legend>
+      <p>
+          Applicant Income (monthly): <input type="number" name="ApplicantIncome" value="2165" min="0">
+          CoApplicant Income (monthly): <input type="number" name="CoApplicantIncome" value="3422" min="0">
+      </p>
+   </fieldset>
+
+   <fieldset>
+      <legend>Loan Terms</legend>
+      <p>
+          Loan Amount (in thousands): <input type="number" name="LoanAmount" value="152" min="0">
+          Loan Term (in months): <input type="number" name="LoanTerm" value="360" min="0">
+      </p>
+   </fieldset>
+
+<hr/>
+
+<input type="submit" value="Submit">
+
+ </form>
+</body>
+</html>
