@@ -17,6 +17,35 @@ rcParams.update({'figure.autolayout': True})
 warnings.filterwarnings("ignore")
 log = logging.getLogger()
 
+# Draw labels above the bar plots
+# Ref: https://matplotlib.org/examples/api/barchart_demo.html
+# Ref: https://stackoverflow.com/questions/39444665/add-data-labels-to-seaborn-factor-plot
+# def autolabel(rects, ax):
+def autolabel(ax):
+    # Get y-axis height to calculate label position from.
+    (y_bottom, y_top) = ax.get_ylim()
+    y_height = y_top - y_bottom
+
+    #for rect in rects:
+    for rect in ax.patches:
+        height = rect.get_height()
+
+        # Fraction of axis height taken up by this rectangle
+        p_height = (height / y_height)
+
+        # If we can fit the label above the column, do that;
+        # otherwise, put it inside the column.
+        # if p_height > 0.95: arbitrary; 95% looked good to me.
+        if p_height > 0.90:
+            # label_position = height - (y_height * 0.05)
+            label_position = height - (y_height * 0.1)
+        else:
+            label_position = height + (y_height * 0.01)
+
+        ax.text(rect.get_x() + rect.get_width()/2., label_position,
+                # '%d' % int(height),
+                '%.2f' % height,
+                ha='center', va='bottom', color='red', fontweight='bold')
 
 #
 # UNIVARIATE Data Analysis, returns count of categorical values (both normalized and un-normalized)
@@ -37,7 +66,9 @@ def do_plotCategorical(df, column, filename):
 	ax1.set_title('Un-Normalised')
 	plt.subplots_adjust(wspace=0.5)  # set spacing between plots
 
-	sns.countplot(df[column], ax=ax1)
+	cp_cx = sns.countplot(df[column], ax=ax1)
+
+	autolabel(cp_cx)
 
 	ax2 = fig.add_subplot(122)
 	ax2.set_title('Normalised')
@@ -46,7 +77,9 @@ def do_plotCategorical(df, column, filename):
 
 	df1 = pd.DataFrame(ser).reset_index()
 	df1.columns = ['Loan_Status', 'count']
-	sns.barplot(df1['Loan_Status'], df1['count'])
+
+	bp_cx = sns.barplot(df1['Loan_Status'], df1['count'])
+	autolabel(bp_cx)
 
 	fig.savefig(filename)
 	plt.show()
@@ -67,7 +100,9 @@ def do_plotCategorical_Notnormalised(df, columns, filename):
 		log.info('columns[' + str(i) + ']' + columns[i])
 		ax_tmp = fig.add_subplot(2, 2, i + 1)
 		plt.xlabel(columns[i])  # Must come after add_subplot otherwise x-axis screwed up
-		sns.countplot(df[columns[i]], ax=ax_tmp)
+		cp_ax = sns.countplot(df[columns[i]], ax=ax_tmp)
+
+		autolabel(cp_ax)
 
 	plt.tight_layout()
 	fig.savefig(filename)
@@ -85,11 +120,13 @@ def do_plotCategorical_Normalised(norm_val_count_series, column, filename):
 	fig.suptitle('Normalized Plots: ' + column + ' vs. Count', y = 1.0)
 	df1 = pd.DataFrame(norm_val_count_series).reset_index()
 	df1.columns = [column, 'Count']
-	sns.barplot(df1[column], df1['Count'])
+	bp_ax = sns.barplot(df1[column], df1['Count'])
+
+	autolabel(bp_ax)
+
 	fig.savefig(filename)
 	plt.show()
 	plt.close(fig)
-
 
 #
 # UNIVARIATE Numerical Data Analysis e.g. ApplicantIncome, CoapplicantIncome, LoanAmount
@@ -141,14 +178,19 @@ def do_plotOrdinals(vclist_series, nvclist_series, columns, filename):
 		df1 = pd.DataFrame(vclist_series[i]).reset_index()
 		df1.columns = [columns[i], 'Count']
 		# sns.barplot(df1['gender'], df1['count'])
-		sns.barplot(df1[columns[i]], df1['Count'])
+		bp_ax = sns.barplot(df1[columns[i]], df1['Count'])
+
+		autolabel(bp_ax)
 	# plt.suptitle('Ordinal Normalized Plots')
 	for i in range(len(columns)):
 		ax = plt.subplot(2, 3, i + 4)
 		df1 = pd.DataFrame(nvclist_series[i]).reset_index()
 		df1.columns = [columns[i], 'Count']
 		# sns.barplot(df1['gender'], df1['count'])
-		sns.barplot(df1[columns[i]], df1['Count'])
+		bp_ax = sns.barplot(df1[columns[i]], df1['Count'])
+
+		autolabel(bp_ax)
+
 	fig.savefig(filename)
 	plt.show()
 	plt.close(fig)
@@ -172,7 +214,9 @@ def do_crossTab(df, column1, column2):
 
 	# Ref: https://stackoverflow.com/questions/43544694/using-pandas-crosstab-with-seaborn-stacked-barplots
 	# Plot grouped bar char
-	sns.barplot(x=stacked_data[column1], y=stacked_data.value, hue=stacked_data[column2])
+	bp_ax = sns.barplot(x=stacked_data[column1], y=stacked_data.value, hue=stacked_data[column2])
+	autolabel(bp_ax)
+
 	plt.show()
 
 
@@ -185,7 +229,20 @@ def do_multiple_XTab_GroupedBarPlot(df, nrows, ncols, columns, column2, filename
 		ct_df = pd.crosstab(df[columns[i]], df[column2], normalize='index')
 		stacked_data = ct_df.stack().reset_index().rename(columns={0: 'value'})
 		ax_ = fig.add_subplot(nrows, ncols, i + 1)
-		sns.barplot(x=stacked_data[columns[i]], y=stacked_data.value, hue=stacked_data[column2], ax=ax_)
+		bp_ax = sns.barplot(x=stacked_data[columns[i]], y=stacked_data.value, hue=stacked_data[column2], ax=ax_)
+		autolabel(bp_ax)
+
+		# Ref: https://stackoverflow.com/questions/30490740/move-legend-outside-figure-in-seaborn-tsplot/34579525
+		# Legend blocking original graph, move it outside
+		# resize figure box to -> put the legend out of the figure
+		###
+		box = bp_ax.get_position() # get position of figure
+		bp_ax.set_position([box.x0, box.y0, box.width * 0.85, box.height]) # resize position
+
+		# Put a legend to the right side
+		bp_ax.legend(loc='center right', bbox_to_anchor=(1.25, 0.5), ncol=1)
+		###
+
 		plt.subplots_adjust(wspace=0.5, hspace=0.5)
 		plt.xticks(rotation=60)
 		plt.xlabel(columns[i])
@@ -230,7 +287,20 @@ def do_multiple_XCut_GroupedBarPlot(df, nrows, ncols, columns, column2, groupByB
 		stacked_data = ct_df.stack().reset_index().rename(columns={0: 'value'})
 
 		ax_ = fig.add_subplot(nrows, ncols, i + 1)
-		sns.barplot(x=stacked_data[columns[i]], y=stacked_data.value, hue=stacked_data[column2], ax=ax_)
+		bp_ax = sns.barplot(x=stacked_data[columns[i]], y=stacked_data.value, hue=stacked_data[column2], ax=ax_)
+		autolabel(bp_ax)
+
+		# Ref: https://stackoverflow.com/questions/30490740/move-legend-outside-figure-in-seaborn-tsplot/34579525
+		# Legend blocking original graph, move it outside
+		# resize figure box to -> put the legend out of the figure
+		###
+		box = bp_ax.get_position() # get position of figure
+		bp_ax.set_position([box.x0, box.y0, box.width * 0.85, box.height]) # resize position
+
+		# Put a legend to the right side
+		bp_ax.legend(loc='center right', bbox_to_anchor=(1.25, 0.5), ncol=1)
+		###
+
 		plt.subplots_adjust(wspace=0.5, hspace=0.5)
 		plt.xticks(rotation=60)
 		plt.xlabel(columns[i])
@@ -305,16 +375,18 @@ def do_correlationPlot(df, filename):
 
 if __name__ == '__main__':
 	# oheFlag=False, scaleFlag=False, feFlag=True
-	# X, y = lp_eda.do_processDataset(False, False, False)
-	X, y = lp_eda.do_processDataset(False, True, True)
+	X, y = lp_eda.do_processDataset(False, False, False)
+	# X, y = lp_eda.do_processDataset(False, True, True)
 
 	log.debug(type(y))
 	#log.debug(y)
 	log.debug('Columns:')
 	log.debug(X.columns)
 
+	'''
 	df = X.merge(y.to_frame(), left_index=True, right_index=True)
 	log.debug(df['Property_Area'].head())
+	'''
 	# do_correlationPlot(X, 'corr.png')
 
 	# Categorical Variables: Gender, Married, Self_Employed, Credit_History, Loan_Status
@@ -324,10 +396,12 @@ if __name__ == '__main__':
 	vc3, nvc3 = do_countCategoricalValues(X, 'Self_Employed')
 	vc4, nvc4 = do_countCategoricalValues(X, 'Credit_History')
 
-	# print(X.columns)
-	'''
-	do_plotCategorical_Notnormalised(X, ['Gender', 'Married', 'Self_Employed', 'Credit_History'], 'un_normalised_gmsc.png')
+	# do_plotCategorical_Notnormalised(X, ['Gender', 'Married', 'Self_Employed', 'Credit_History'], 'un_normalised_gmsc.png')
 
+	# print(X.columns)
+
+	# do_plotCategorical_Notnormalised(X, ['Gender', 'Married', 'Self_Employed', 'Credit_History'], 'un_normalised_gmsc.png')
+	'''
 	do_plotCategorical_Normalised(nvc1, 'Gender', 'f1.png')
 	do_plotCategorical_Normalised(nvc2, 'Married', 'f2.png')
 	do_plotCategorical_Normalised(nvc3, 'Self_Employed', 'f3.png')
@@ -348,10 +422,10 @@ if __name__ == '__main__':
 	do_plotNumericalDataDistribution_OneFeature(X, 'CoapplicantIncome', 'CoAppInc.png')
 	do_plotNumericalDataDistribution_OneFeature(X, 'LoanAmount', 'LoanAmt.png')
 	do_plotDataNumericalDistribution_2Features(X, 'Education', 'ApplicantIncome', 'Ed_vs_Inc.png')
-
+	'''
 
 	# Ordinal Variables - some order involved e.g. dependents, education, property_area
-
+	'''
 	dep_vc1, dep_nvc1 = do_countCategoricalValues(X, 'Dependents')
 	edu_vc2, edu_nvc2 = do_countCategoricalValues(X, 'Education')
 	prop_vc3, prop_nvc3 = do_countCategoricalValues(X, 'Property_Area')
@@ -368,7 +442,7 @@ if __name__ == '__main__':
 	'''
 
 	# Bivariate Testing
-	'''
+
 	print(X.columns)
 	full_df = X.copy()
 	full_df['Loan_Status'] = y
@@ -377,11 +451,10 @@ if __name__ == '__main__':
 	full_df['Total_Income'] = full_df['ApplicantIncome'] + full_df['CoapplicantIncome']
 	print(full_df.head())
 
+	'''
 	do_crossTab(full_df, 'Gender', 'Loan_Status')
 
-	'''
 
-	'''
 	do_multiple_XTab_GroupedBarPlot(full_df, 1, 1, ['Gender'], 'Loan_Status', 'xtgbp1.png')
 	do_multiple_XTab_GroupedBarPlot(full_df, 1, 1, ['Married'], 'Loan_Status', 'xtgbp2.png')
 	do_multiple_XTab_GroupedBarPlot(full_df, 1, 1, ['Self_Employed'], 'Loan_Status', 'xtgbp3.png')
@@ -390,6 +463,7 @@ if __name__ == '__main__':
 	do_multiple_XTab_GroupedBarPlot(full_df, 1, 1, ['Education'], 'Loan_Status', 'xtgbp6.png')
 	do_multiple_XTab_GroupedBarPlot(full_df, 1, 1, ['Property_Area'], 'Loan_Status', 'xtgbp7.png')
 	'''
+
 
 	'''
 	do_multiple_XTab_Stacked(full_df, 1, 1, ['Gender'], 'Loan_Status', 'xts1.png')
@@ -401,8 +475,8 @@ if __name__ == '__main__':
 	do_multiple_XTab_Stacked(full_df, 1, 1, ['Property_Area'], 'Loan_Status', 'xts7.png')
 	'''
 
-
 	'''
+
 	do_multiple_XCut_GroupedBarPlot(full_df, 1, 1, ['ApplicantIncome'], 'Loan_Status',
 	                                [0, 2500, 4000, 6000, 81000], ['Low', 'Average', 'High', 'Very High'], 'gbp1.png')
 	do_multiple_XCut_GroupedBarPlot(full_df, 1, 1, ['CoapplicantIncome'], 'Loan_Status',
@@ -411,6 +485,7 @@ if __name__ == '__main__':
 	                                [0, 2500, 4000, 6000, 81000], ['Low', 'Average', 'High', 'Very High'], 'gbp3.png')
 	do_multiple_XCut_GroupedBarPlot(full_df, 1, 1, ['LoanAmount'], 'Loan_Status',
 	                                [0, 100, 200, 700], ['Low', 'Average', 'High'], 'gbp4.png')
+
 	'''
 
 	'''
@@ -424,9 +499,9 @@ if __name__ == '__main__':
 	                         ['Low', 'Average', 'High'], 'xcut4.png')
 	'''
 
-	'''
-	do_grpByPlot(full_df, 'Loan_Status', 'ApplicantIncome', 'grpby.png')
 
+	do_grpByPlot(full_df, 'Loan_Status', 'ApplicantIncome', 'grpby.png')
+	'''
 	do_correlationPlot(full_df, 'corr.png')
 	'''
 

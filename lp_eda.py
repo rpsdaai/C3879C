@@ -88,7 +88,7 @@ def split_dataset(df, dependent_col):
 
 	return X, y
 
-# Feature Engineering
+# Feature Engineering (Web Service)
 def do_FeatureEngineering_WS(df):
 	log.debug('--> lp_eda: do_FeatureEngineering_WS()')
 	log.debug('TYPES: ' + str(df.dtypes))
@@ -185,8 +185,8 @@ def scale_data(df, scale_fn, cols_2_scale):
 	log.debug('scale_data(): df.index')
 	log.debug(df.columns)
 	tmp_df = pd.DataFrame(ct.fit_transform(df), index=df.index, columns=df.columns)
-	log.debug('ColumnTransformer: ')
-	log.debug(tmp_df['Property_Area'].head())
+	# log.debug('ColumnTransformer: ')
+	# log.debug(tmp_df['Property_Area'].head())
 	return (tmp_df)
 
 
@@ -210,7 +210,7 @@ def do_loadModel(filename):
 def do_processDataset(oheFlag, scaleFlag, feFlag):
 	log.debug('--> do_processDataset()')
 
-	train = pd.read_csv("train_u6lujuX_CVtuZ9i.csv")
+	train = pd.read_csv("data/train.csv")
 
 	X, y = do_EDA(train, oheFlag, feFlag)
 
