@@ -75,7 +75,7 @@ def do_LogisticRegression(x_train, y_train):
 	accuracy = cross_val_score(model, x_train, y_train, scoring='accuracy', cv=skf)
 	roc_auc = cross_val_score(model, x_train, y_train, scoring='roc_auc', cv=skf)
 
-	do_computeROCScores(model, X, y, 'LR')
+	do_computeROCScores(model, x_train, y_train, 'LR')
 
 	return accuracy, roc_auc, model
 
@@ -89,7 +89,7 @@ def do_DecisionTree(x_train, y_train):
 	accuracy = cross_val_score(model, x_train, y_train, scoring='accuracy', cv=skf)
 	auc_roc = cross_val_score(model, x_train, y_train, scoring='roc_auc', cv=skf)
 
-	do_computeROCScores(model, X, y, 'DT')
+	do_computeROCScores(model, x_train, y_train, 'DT')
 	return accuracy, auc_roc, model
 
 
@@ -102,7 +102,7 @@ def do_RandomForest(x_train, y_train):
 	accuracy = cross_val_score(model, x_train, y_train, scoring='accuracy', cv=skf)
 	auc_roc = cross_val_score(model, x_train, y_train, scoring='roc_auc', cv=skf)
 
-	do_computeROCScores(model, X, y, 'RF')
+	do_computeROCScores(model, x_train, y_train, 'RF')
 
 	return accuracy, auc_roc, model
 
@@ -116,7 +116,7 @@ def do_XGBoost(x_train, y_train):
 	accuracy = cross_val_score(model, x_train, y_train, scoring='accuracy', cv=skf)
 	auc_roc = cross_val_score(model, x_train, y_train, scoring='roc_auc', cv=skf)
 
-	do_computeROCScores(model, X, y, 'XGB')
+	do_computeROCScores(model, x_train, y_train, 'XGB')
 
 	return accuracy, auc_roc, model
 
@@ -131,7 +131,7 @@ def do_Bagging_Ensemble(x_train, y_train):
 	accuracy = cross_val_score(model, x_train, y_train, scoring='accuracy', cv=skf)
 	auc_roc = cross_val_score(model, x_train, y_train, scoring='roc_auc', cv=skf)
 
-	do_computeROCScores(model, X, y, 'BEN')
+	do_computeROCScores(model, x_train, y_train, 'BEN')
 
 	return accuracy, auc_roc, model
 
@@ -145,7 +145,7 @@ def do_Boosting(x_train, y_train, num_trees):
 	accuracy = cross_val_score(model, x_train, y_train, scoring='accuracy', cv=skf)
 	auc_roc = cross_val_score(model, x_train, y_train, scoring='roc_auc', cv=skf)
 
-	do_computeROCScores(model, X, y, 'ADA')
+	do_computeROCScores(model, x_train, y_train, 'ADA')
 
 	return accuracy, auc_roc, model
 
@@ -177,7 +177,7 @@ def do_VotingEnsemble(x_train, y_train):
 	accuracy = model_selection.cross_val_score(ensemble, x_train, y_train, scoring='accuracy', cv=skf)
 	auc_roc = model_selection.cross_val_score(ensemble, x_train, y_train, scoring='roc_auc', cv=skf)
 
-	do_computeROCScores(ensemble, X, y, 'VOT')
+	do_computeROCScores(ensemble, x_train, y_train, 'VOT')
 
 	return accuracy, auc_roc, ensemble
 
