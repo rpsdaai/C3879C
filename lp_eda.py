@@ -88,36 +88,6 @@ def split_dataset(df, dependent_col):
 
 	return X, y
 
-# Feature Engineering (Web Service)
-def do_FeatureEngineering_WS(df):
-	log.debug('--> lp_eda: do_FeatureEngineering_WS()')
-	log.debug('TYPES: ' + str(df.dtypes))
-
-	df['Total_Income'] = df['ApplicantIncome'] + df['CoapplicantIncome']
-	'''
-	log.debug('Total_Income: ' + str(df['Total_Income']))
-	tmp = np.log(df['Total_Income'])
-	log.debug('Total_Income_log: ' + str(tmp))
-	'''
-	df['Total_Income_log'] = np.log(df['Total_Income'])
-
-	# EMI is the monthly amount to be paid by the applicant to repay the loan
-	# Calculated by taking the ratio of loan amount with respect to loan amount term.
-	df['EMI'] = df['LoanAmount'] / df['Loan_Amount_Term']
-	df['EMI_log'] = np.log(df['EMI'])
-	# EMI_log has null values
-	impute_median(df, 'EMI_log')
-	# Income left after the EMI has been paid. If this value is high, the chances are high that a person
-	# will repay the loan and hence increasing the chances of loan approval
-	# Multiply by 1000 to make units equal
-	df['Balance_Income'] = df['Total_Income']  - (df['EMI']*1000)
-	df['Balance_Income_log'] = np.log(df['Balance_Income'])
-	# Balance_Income_log has null values
-	impute_median(df, 'Balance_Income_log')
-
-	cols2drop = ['ApplicantIncome', 'CoapplicantIncome', 'Total_Income', 'Balance_Income', 'EMI']
-	remove_useless_data(df, cols2drop)
-
 # Feature Engineering
 def do_FeatureEngineering(df):
 	log.debug('--> lp_eda: do_FeatureEngineering()')
