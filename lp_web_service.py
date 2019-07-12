@@ -153,7 +153,7 @@ def loan_approval_service(name, data):
 
 	log.debug('df = ' + df.to_string() + ' type = ' + str(type(df)))
 
-	lp_eda.do_FeatureEngineering_WS(df)
+	lp_eda.do_FeatureEngineering(df)
 
 	# Do One Hot Encoding before scaling data
 	df = pd.get_dummies(df).reindex(columns = ohe_cols, fill_value = 0)
