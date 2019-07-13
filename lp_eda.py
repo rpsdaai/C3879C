@@ -194,22 +194,3 @@ def do_processDataset(oheFlag, scaleFlag, feFlag):
 			X = scale_data(X, RobustScaler(), ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term'])
 
 	return X, y
-
-# def main():
-#    X, y = do_processDataset()
-
-if __name__ == '__main__':
-	log.debug('--> Starting ....')
-	# oheFlag=False, scaleFlag=False, feFlag=True
-	# X, y = do_processDataset(True, False, True)
-	X, y = do_processDataset(False, False, True)
-	log.debug(X.columns)
-	log.debug(X['Property_Area'].head())
-	log.debug(X.isnull().sum())
-
-	'''
-	do_saveModel('ohecols_fe.pkl', X.columns, 'p')
-	contents = do_loadModel('ohecols_fe.pkl')
-	log.debug('Read back ohecols_fe.pkl: ' + contents)
-	'''
-# xs_train, xs_test, ys_train, ys_test = train_test_split(X, y, test_size = 0.2)
