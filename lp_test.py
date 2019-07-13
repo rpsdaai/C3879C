@@ -362,19 +362,19 @@ if __name__ == '__main__':
 	# Visualization Tests - START
 	#
 
-	# X, y = lp_eda.do_processDataset(False, False, False)
-	# do_plotCategoricals_Test(X)
-	# do_plotNumericals_Test(X)
-	# do_plotOrdinals_Test(X)
-	#
-	# full_df = X.copy() # scaled, ohe and feature engineered
-	# full_df['Loan_Status'] = y
-	# # remap to original categorical value
-	# full_df['Loan_Status'] = full_df['Loan_Status'].map({0:'N', 1:'Y'})
-	# full_df['Total_Income'] = full_df['ApplicantIncome'] + full_df['CoapplicantIncome']
-	#
-	# do_plotXCut_Test(full_df)
-	# do_plotXTab_Test(full_df)
+	X, y = lp_eda.do_processDataset(False, False, False)
+	do_plotCategoricals_Test(X)
+	do_plotNumericals_Test(X)
+	do_plotOrdinals_Test(X)
+
+	full_df = X.copy() # scaled, ohe and feature engineered
+	full_df['Loan_Status'] = y
+	# remap to original categorical value
+	full_df['Loan_Status'] = full_df['Loan_Status'].map({0:'N', 1:'Y'})
+	full_df['Total_Income'] = full_df['ApplicantIncome'] + full_df['CoapplicantIncome']
+
+	do_plotXCut_Test(full_df)
+	do_plotXTab_Test(full_df)
 
 	#
 	# Visualization Tests - END
@@ -384,7 +384,7 @@ if __name__ == '__main__':
 	# Visualize important features - START
 	#
 
-	# do_plotImportantFeatures_Test('rank_features.png')
+	do_plotImportantFeatures_Test('rank_features.png')
 
 	#
 	# Visualize important features - END
@@ -393,13 +393,13 @@ if __name__ == '__main__':
 	#
 	# Modelling - START
 	#
-	# do_findBestModel_NoGS()
+	do_findBestModel_NoGS()
 
 	#
 	# Testing against model found - START
 	#
-	# do_test_with_fe_neg('my_no_fe_gs_model_2.pkl', 'ohecols_fe.pkl')
-	# do_test_with_fe_pos('my_no_fe_gs_model_2.pkl', 'ohecols_fe.pkl')
+	do_test_with_fe_neg('my_no_fe_gs_model_2.pkl', 'ohecols_fe.pkl')
+	do_test_with_fe_pos('my_no_fe_gs_model_2.pkl', 'ohecols_fe.pkl')
 
 	#
 	# Testing against model found - END
@@ -420,9 +420,9 @@ if __name__ == '__main__':
 	# Modelling - END
 	#
 
-	'''
-	do_test_with_fe_neg('mygs_fe_model.pkl', 'ohecols_fe.pkl')
-	do_test_with_fe_pos('mygs_fe_model.pkl', 'ohecols_fe.pkl')
-	do_test_with_fe_neg('my_no_fe_gs_model.pkl', 'ohecols_fe.pkl')
-	do_test_with_fe_pos('my_no_fe_gs_model.pkl', 'ohecols_fe.pkl')
-	'''
+
+	# do_test_with_fe_neg('mygs_fe_model.pkl', 'ohecols_fe.pkl')
+	# do_test_with_fe_pos('mygs_fe_model.pkl', 'ohecols_fe.pkl')
+	# do_test_with_fe_neg('my_no_fe_gs_model.pkl', 'ohecols_fe.pkl')
+	# do_test_with_fe_pos('my_no_fe_gs_model.pkl', 'ohecols_fe.pkl')
+
