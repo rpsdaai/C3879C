@@ -1,1 +1,2 @@
-
+Both models have enabled feature engineering: one uses grid searching to find best parameters, the other uses default parameter settings
+ohecols_fe - OHE of feature engineered cols
