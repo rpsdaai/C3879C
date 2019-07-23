@@ -14,6 +14,16 @@ import lp_modelling as lpm
 log = logging.getLogger()
 
 #
+# Create OHE Columns file - START
+#
+def do_createOHE_File(filename):
+	X1, y1 = lp_eda.do_processDataset(True, True, True)
+	lp_eda.do_saveModel(filename, X1.columns, 'p')
+#
+# Create OHE Columns file - END
+#
+
+#
 # Visualization Tests - START
 #
 def do_removeFiles(filename):
@@ -176,7 +186,7 @@ def do_findBestModel_GS():
 
 	lpm.classifierlist.clear()
 	lpm.aucScores_.clear()
-	aucScoresCounter = 0
+	lpm.aucScoresCounter = 0
 
 	lpm.do_useGridSearch2FindBestModel(X, y)
 	log.debug('Classifierlist Length: ' + str(len(lpm.classifierlist)))
@@ -359,6 +369,14 @@ def do_test_with_fe_neg(filename, ohecols_file):
 
 if __name__ == '__main__':
 	#
+	# Create OHE Columns file - used for doing prediction with new applicant - START
+	#
+	do_createOHE_File('ohecols_fe.pkl')
+	#
+	# Create OHE Columns file - used for doing prediction with new applicant - END
+	#
+
+	#
 	# Visualization Tests - START
 	#
 
@@ -369,7 +387,7 @@ if __name__ == '__main__':
 
 	full_df = X.copy() # scaled, ohe and feature engineered
 	full_df['Loan_Status'] = y
-	# remap to original categorical value
+	# # remap to original categorical value
 	full_df['Loan_Status'] = full_df['Loan_Status'].map({0:'N', 1:'Y'})
 	full_df['Total_Income'] = full_df['ApplicantIncome'] + full_df['CoapplicantIncome']
 
