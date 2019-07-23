@@ -32,13 +32,13 @@ import lp_eda
 warnings.filterwarnings("ignore")
 log = logging.getLogger()
 
-classifierDict = {
-	'LR': LogisticRegression(solver='liblinear'),
-	'DT': DecisionTreeClassifier(),
-	'RF': RandomForestClassifier(max_depth=10, n_estimators=10),
-	'XGB': XGBClassifier(),
-
-}
+# classifierDict = {
+# 	'LR': LogisticRegression(solver='liblinear'),
+# 	'DT': DecisionTreeClassifier(),
+# 	'RF': RandomForestClassifier(max_depth=10, n_estimators=10),
+# 	'XGB': XGBClassifier(),
+#
+# }
 
 # auc
 aucScores_ = {}
@@ -48,6 +48,8 @@ aucScoresCounter = 0
 def do_computeROCScores(model, X, y, classifierName):
 	# Ref: https://stackoverflow.com/questions/10851906/python-3-unboundlocalerror-local-variable-referenced-before-assignment/10851939
 	global aucScoresCounter
+	global aucScores_
+	global classifierlist
 
 	proba = model.predict_proba(X)[:,1]
 	frp,trp, threshold = roc_curve(y, proba)
@@ -310,6 +312,8 @@ def do_computeModelMetrics(model, X, y):
 # Ref: https://stackoverflow.com/questions/42894871/how-to-plot-multiple-roc-curves-in-one-plot-with-legend-and-auc-scores-in-python
 # Multiple ROC curves on 1 graph that was cross validated for a particular classifier
 def do_plotRocCurves(aucScores, filename):
+	global classifierlist
+
 	# Now, plot the computed values
 	for i in range(len(aucScores)):
 		# plt.plot(fpr, tpr, label='%s ROC (area = %0.2f)' % (m['label'], auc))
@@ -361,6 +365,8 @@ def do_GridSearch(classifier, x_train, y_train, params, nfolds):
 
 
 def update_GridSearch_Scores(grid_search, model, model_suffix):
+	global algo_scores_tracker
+
 	log.debug('update_GridSearch_Scores')
 
 	# algo_scores['Estimator'] = grid_search.best_estimator_
@@ -389,6 +395,8 @@ def update_GridSearch_Scores(grid_search, model, model_suffix):
 	return (algo_scores_tracker)
 
 def do_useGridSearch2FindBestModel(X, y):
+	global algo_scores_tracker
+
 	#
 	# Logistic Regression Grid Search
 	#
@@ -517,6 +525,7 @@ def do_useGridSearch2FindBestModel(X, y):
 
 def do_getModelScores_fromGridSearch():
 	log.debug('do_getModelScores_fromGridSearch()')
+	global algo_scores_tracker
 
 	acc_key = ''
 	acc_score = 0
