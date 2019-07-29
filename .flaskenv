@@ -1,0 +1,2 @@
+FLASK_APP=lp_web_service.py
+FLASK_ENV=development
