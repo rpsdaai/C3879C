@@ -1,8 +1,6 @@
 # Ref: https://www.tutorialspoint.com/flask/flask_url_building.htm
 from flask import Flask, request, redirect, render_template, url_for
 
-import random
-
 # import numpy as np
 import pandas as pd
 # import sklearn
@@ -28,10 +26,10 @@ app = Flask(__name__)
 
 # load pickled file containing ohe columns
 # ohe_cols = lp_eda.do_loadModel("ohe_cols.pkl")
-ohe_cols = lp_eda.do_loadModel("ohecols_fe.pkl")
+ohe_cols = lp_eda.do_loadModel("models/ohecols_fe.pkl")
 # load the trained model
 # model = do_loadModel("lr_no_gs.pkl")
-model = lp_eda.do_loadModel("mygs_fe_model.pkl")
+model = lp_eda.do_loadModel("models/mygs_fe_model.pkl")
 
 # NO Feature Engineering
 # columns to scale; values are large compared to the other columns
@@ -89,6 +87,7 @@ def test_form_service():
 		coapplicantIncome = request.form.get("CoApplicantIncome")
 		loanAmt = request.form.get("LoanAmount")
 		loanTerm = request.form.get("LoanTerm")
+		creditHistory = request.form.get("CreditHistory")
 	else:
 		log.debug("GET")
 		fname = request.args.get('firstname')
@@ -103,6 +102,7 @@ def test_form_service():
 		coapplicantIncome = request.args.get("CoApplicantIncome")
 		loanAmt = request.args.get("LoanAmount")
 		loanTerm = request.args.get("LoanTerm")
+		creditHistory = request.form.get("CreditHistory")
 	# return redirect(url_for('success',name = fname+' '+lname))
 
 	# Make a list of dictionary items from user input
@@ -117,7 +117,7 @@ def test_form_service():
 			'CoapplicantIncome': coapplicantIncome,
 			'LoanAmount': loanAmt,
 			'Loan_Amount_Term': loanTerm,
-			'Credit_History': random.randint(0, 1),
+			'Credit_History': creditHistory,
 			'Property_Area': property
 		}
 	]
